@@ -1,0 +1,51 @@
+version: '3'
+
+networks:
+  backend:
+    driver: ${NETWORKS_DRIVER}
+volumes:
+  postgres:
+    driver: ${VOLUMES_DRIVER}
+
+services:
+    postgres:
+      container_name: BWDICF_postgres
+      build: ./db_builder/docker/postgres
+      volumes:
+        - ${DATA_PATH_HOST}:/var/lib/postgresql
+        - ./db_builder/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      ports:
+        - "${POSTGRES_PORT_OUTSIDE}:${POSTGRES_PORT_INSIDE}"
+      restart: "no"
+      environment:
+        - POSTGRES_DB=${POSTGRES_DB_DEF}
+        - POSTGRES_USER=${POSTGRES_USER_SUP}
+        - POSTGRES_PASSWORD=${POSTGRES_PASS_SUP}
+      networks:
+        - backend
+    adminer:
+      container_name: bwdicf_adminer
+      image: adminer
+      restart: "no"
+      ports:
+        - ${ADMINER_PORT}:8080
+      networks:
+        - backend
+    backend:
+      container_name: bwdicf_backend
+      build: ./backend/
+      ports:
+        - "${BACKEND_PORT}:8000"
+      env_file: 
+        - ./backend/.env
+      volumes:
+        - ./backend/:/app/
+      environment:
+        - POSTGRES_DB=${POSTGRES_DB_BWDICF}
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASS=${POSTGRES_PASS}
+        - POSTGRES_HOST=${POSTGRES_HOST_INSIDE}
+        - POSTGRES_PORT=${POSTGRES_PORT_INSIDE}
+      command: flask run
+      networks:
+        - backend

@@ -1,0 +1,19 @@
+{
+  "name": "database",
+  "version": "0.0.1",
+  "description": "Used to build and update our database instance",
+  "main": "index.js",
+  "scripts": {
+    "start": "./scripts/start.sh",
+    "stop": "./scripts/stop.sh",
+    "delete": "./scripts/delete.sh",
+    "knex": "./node_modules/.bin/knex"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "faker": "^4.1.0",
+    "knex": "^0.21.12",
+    "pg": "^8.5.0"
+  }
+}
