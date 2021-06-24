@@ -9,11 +9,11 @@ volumes:
 
 services:
     postgres:
-      container_name: BWDICF_postgres
-      build: ./db_builder/docker/postgres
+      container_name: bwdicf_postgres
+      build: ./database/docker/postgres
       volumes:
         - ${DATA_PATH_HOST}:/var/lib/postgresql
-        - ./db_builder/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./database/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
       ports:
         - "${POSTGRES_PORT_OUTSIDE}:${POSTGRES_PORT_INSIDE}"
       restart: "no"
@@ -46,6 +46,6 @@ services:
         - POSTGRES_PASS=${POSTGRES_PASS}
         - POSTGRES_HOST=${POSTGRES_HOST_INSIDE}
         - POSTGRES_PORT=${POSTGRES_PORT_INSIDE}
-      command: flask run
+      command: node app.js
       networks:
         - backend
